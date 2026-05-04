@@ -1,0 +1,189 @@
+# ===== NODE.JS & NPM =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.pnp
+.pnp.js
+
+# ===== REACT SPECIFIC =====
+# React build outputs
+build/
+dist/
+.build/
+
+# React dev dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# React testing
+coverage/
+.nyc_output/
+
+# React misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===== EXPRESS & BACKEND =====
+# Express logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Express tmp files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# ===== TYPESENSE DATABASE FILES =====
+self-hosted/typesense-data/db/*
+self-hosted/typesense-data/meta/*
+self-hosted/typesense-data/state/*
+self-hosted/typesense-data/models/*
+self-hosted/typesense-data/tmp/*
+typesense-data/
+!self-hosted/typesense-data/.gitkeep
+
+# Typesense logs and cache
+typesense.log
+typesense-cache/
+
+# ===== ENVIRONMENT VARIABLES =====
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+.env.staging.local
+
+# ===== IDE & EDITOR =====
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Text Editor
+*~
+*.swp
+*.swo
+*.swn
+.DS_Store
+
+# ===== OS FILES =====
+Thumbs.db
+desktop.ini
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+*.cab
+
+# ===== BUILD & DISTRIBUTION =====
+/dist
+/build
+/lib
+/es
+/.next
+/out
+.cache/
+.turbo/
+
+# ===== CACHE & OPTIMIZATION =====
+.eslintcache
+.stylelintcache
+.cache/
+*.cache
+.turbo/
+.next/cache/
+
+# ===== TESTING =====
+coverage/
+.nyc_output/
+*.lcov
+.jest/
+
+# ===== RUNTIME & PROCESS =====
+*.pid
+*.seed
+*.pid.lock
+.pm2/
+
+# ===== PACKAGE MANAGER FILES =====
+.npm/
+.eslintignore
+.prettierignore
+
+# ===== ARCHIVES & COMPRESSED =====
+*.zip
+*.tar.gz
+*.tar
+*.rar
+*.7z
+*.gz
+*.bak
+
+# ===== DATABASE & DATA =====
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+mongo-data/
+postgres-data/
+
+# ===== DOCKER & CONTAINER =====
+.dockerignore
+docker-compose.override.yml
+
+# ===== PYTHON (if used in project) =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+
+# ===== SENSITIVE FILES =====
+.ssh/
+*.pem
+*.key
+*.crt
+*.cert
+secrets.json
+
+# ===== EDITOR BACKUPS =====
+*.bak
+*.backup
+*~
+.swp
+.swo
+
+# ===== MISCELLANEOUS =====
+.history/
+.versionbot/
+.env.*.local
+*.pid
+run/
+.turbo
+dist-ssr/
+*.local
