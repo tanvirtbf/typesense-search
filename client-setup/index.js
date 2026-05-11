@@ -15,15 +15,15 @@ const client = new Typesense.Client({
 
 console.log("Connected to Typesense");
 
-const datas = {
-  title: "The Hunger Games",
-  authors: ["Suzanne Collins"],
-  publication_year: 2008,
-  id: "1",
-  average_rating: 4.34,
-  image_url: "https://images.gr-assets.com/books/1447303603m/2767052.jpg",
-  ratings_count: 4780653,
-};
+// const datas = {
+//   title: "The Hunger Games",
+//   authors: ["Suzanne Collins"],
+//   publication_year: 2008,
+//   id: "1",
+//   average_rating: 4.34,
+//   image_url: "https://images.gr-assets.com/books/1447303603m/2767052.jpg",
+//   ratings_count: 4780653,
+// };
 
 async function runBooksDemo() {
   // 1. Delete old books collection if exists
