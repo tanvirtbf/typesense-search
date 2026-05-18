@@ -3,21 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "parcel index.html --port 3000",
+    "start": "parcel index.html --port 3002",
     "build": "parcel build index.html",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier --write ."
   },
   "devDependencies": {
+    "buffer": "^6.0.3",
     "eslint": "8.15.0",
     "parcel": "2.16.4",
     "prettier": "2.6.2"
   },
   "dependencies": {
     "@algolia/autocomplete-js": "1.19.8",
-    "@algolia/autocomplete-plugin-recent-searches": "1.19.8",
     "@algolia/autocomplete-plugin-query-suggestions": "1.19.8",
+    "@algolia/autocomplete-plugin-recent-searches": "1.19.8",
     "algoliasearch": "4",
-    "instantsearch.js": "4.97.0"
+    "instantsearch.js": "4.97.0",
+    "typesense-instantsearch-adapter": "^3.0.2"
   }
 }

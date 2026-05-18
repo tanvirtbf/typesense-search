@@ -1,117 +1,98 @@
-const { algoliasearch, instantsearch } = window;
-const { autocomplete } = window['@algolia/autocomplete-js'];
-const { createLocalStorageRecentSearchesPlugin } =
-  window['@algolia/autocomplete-plugin-recent-searches'];
-const { createQuerySuggestionsPlugin } =
-  window['@algolia/autocomplete-plugin-query-suggestions'];
+import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
 
-const searchClient = algoliasearch('typesense', 'xyz');
+const { instantsearch } = window;
 
-const search = instantsearch({
-  indexName: 'instant_search',
-  searchClient,
-  future: { preserveSharedStateOnUnmount: true },
-  insights: true,
+// 1. Typesense adapter setup
+const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
+  server: {
+    apiKey: 'xyz', // Local test only. Production-e search-only API key use korba.
+    nodes: [
+      {
+        host: 'localhost',
+        port: 8108,
+        protocol: 'http',
+      },
+    ],
+  },
+
+  // 2. Typesense search parameters
+  additionalSearchParameters: {
+    query_by: 'title,authors',
+  },
 });
 
-const virtualSearchBox = instantsearch.connectors.connectSearchBox(() => {});
+// 3. InstantSearch-er jonno search client create
+const searchClient = typesenseInstantsearchAdapter.searchClient;
 
+// 4. InstantSearch initialize
+const search = instantsearch({
+  searchClient,
+  indexName: 'books', // Typesense collection name
+});
+
+// 5. Search UI widgets add
 search.addWidgets([
-  virtualSearchBox({}),
+  // Search input box
+  instantsearch.widgets.searchBox({
+    container: '#searchbox',
+    placeholder: 'Search books...',
+    showReset: true,
+    showSubmit: true,
+    showLoadingIndicator: true,
+  }),
+
+  // Search result list
   instantsearch.widgets.hits({
     container: '#hits',
-  }),
-  instantsearch.widgets.configure({
-    hitsPerPage: 8,
-  }),
-  instantsearch.widgets.dynamicWidgets({
-    container: '#dynamic-widgets',
-    fallbackWidget({ container, attribute }) {
-      return instantsearch.widgets.panel({
-        templates: { header: () => attribute },
-      })(instantsearch.widgets.refinementList)({
-        container,
-        attribute,
-      });
+    templates: {
+      item(hit) {
+        const authors = Array.isArray(hit.authors)
+          ? hit.authors.join(', ')
+          : 'Unknown Author';
+
+        const title = hit._highlightResult?.title?.value || hit.title;
+
+        return `
+          <div class="hit">
+            ${
+              hit.image_url
+                ? `<img src="${hit.image_url}" alt="${hit.title}" style="width: 80px; height: auto; margin-right: 12px;" />`
+                : ''
+            }
+
+            <div class="hit-content">
+              <h3>${title}</h3>
+              <p><strong>Authors:</strong> ${authors}</p>
+              <p><strong>Publication Year:</strong> ${hit.publication_year || 'N/A'}</p>
+              <p><strong>Average Rating:</strong> ${hit.average_rating || 'N/A'}</p>
+              <p><strong>Ratings Count:</strong> ${hit.ratings_count || 0}</p>
+            </div>
+          </div>
+        `;
+      },
     },
-    widgets: [],
   }),
+
+  // Result count / stats
+  instantsearch.widgets.stats({
+    container: '#stats',
+    templates: {
+      text(data) {
+        return `${data.nbHits} results found in ${data.processingTimeMS}ms`;
+      },
+    },
+  }),
+
+  // Pagination
   instantsearch.widgets.pagination({
     container: '#pagination',
   }),
+
+  // Basic configuration
+  instantsearch.widgets.configure({
+    hitsPerPage: 8,
+  }),
 ]);
 
+// 6. Start search UI
 search.start();
-
-const recentSearchesPlugin = createLocalStorageRecentSearchesPlugin({
-  key: 'instantsearch',
-  limit: 3,
-  transformSource({ source }) {
-    return {
-      ...source,
-      onSelect({ setIsOpen, setQuery, item, event }) {
-        onSelect({ setQuery, setIsOpen, event, query: item.label });
-      },
-    };
-  },
-});
-
-const querySuggestionsPlugin = createQuerySuggestionsPlugin({
-  searchClient,
-  indexName: 'instant_search_demo_query_suggestions',
-  getSearchParams() {
-    return recentSearchesPlugin.data.getAlgoliaSearchParams({ hitsPerPage: 6 });
-  },
-  transformSource({ source }) {
-    return {
-      ...source,
-      sourceId: 'querySuggestionsPlugin',
-      onSelect({ setIsOpen, setQuery, event, item }) {
-        onSelect({ setQuery, setIsOpen, event, query: item.query });
-      },
-      getItems(params) {
-        if (!params.state.query) {
-          return [];
-        }
-
-        return source.getItems(params);
-      },
-    };
-  },
-});
-
-autocomplete({
-  container: '#searchbox',
-  openOnFocus: true,
-  detachedMediaQuery: 'none',
-  onSubmit({ state }) {
-    setInstantSearchUiState({ query: state.query });
-  },
-  plugins: [recentSearchesPlugin, querySuggestionsPlugin],
-});
-
-function setInstantSearchUiState(indexUiState) {
-  search.mainIndex.setIndexUiState({ page: 1, ...indexUiState });
-}
-
-function onSelect({ setIsOpen, setQuery, event, query }) {
-  if (isModifierEvent(event)) {
-    return;
-  }
-
-  setQuery(query);
-  setIsOpen(false);
-  setInstantSearchUiState({ query });
-}
-
-function isModifierEvent(event) {
-  const isMiddleClick = event.button === 1;
-
-  return (
-    isMiddleClick ||
-    event.altKey ||
-    event.ctrlKey ||
-    event.metaKey ||
-    event.shiftKey
-  );
-}
